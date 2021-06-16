@@ -1,6 +1,6 @@
 import random
 
-from flask import Flask
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
@@ -13,13 +13,7 @@ def say_hello():
     ]
     fruits_count = random.randrange(3, 6)
     selected_fruits = random.sample(fruits_list, fruits_count)
-    page_code = '<h1 style="text-align: center">今日推荐的水果</h1>'
-    page_code += '<hr>'
-    page_code += '<ul>'
-    for fruit in selected_fruits:
-        page_code += f'<li>{fruit}</li>'
-    page_code += '</ul>'
-    return page_code
+    return render_template('index.html', selected_fruits=selected_fruits)
 
 
 if __name__ == '__main__':

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>首页</title>
+        <style>
+
+        </style>
+    </head>
+    <body>
+        <h1>今日推荐的水果</h1>
+        <hr>
+        <ul>
+            {% for fruit in selected_fruits %}
+            <li>{{ fruit }}</li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>
