@@ -4,13 +4,48 @@
         <meta charset="UTF-8">
         <title>首页</title>
         <style>
-
+            /* 通配符选择器 */
+            * {
+                margin: 0;
+                padding: 0;
+            }
+            /* 标签选择器（元素选择器） */
+            h1 {
+                text-align: center;
+                color: red;
+                margin-top: 20px;
+            }
+            /* ID选择器 */
+            #fruits {
+                width: 320px;
+                margin: 10px auto;
+            }
+            /* 父子选择器 */
+            #fruits>li {
+                text-align: center;
+                list-style: none;
+                width: 320px;
+                height: 40px;
+                background-color: darkgreen;
+                color: white;
+                margin-top: 2px;
+                line-height: 40px;
+                font-size: 22px;
+            }
         </style>
     </head>
     <body>
+        <!--
+        前端页面 = Tag + CSS + JavaScript
+        Tag - 承载内容 - content
+        CSS - 层叠样式表 - 页面显示 - display
+            ~ 内嵌样式表（通过标签的style属性设置样式，不推荐使用）
+            ~ 内部样式表（在head部分通过style标签插入CSS选择器）
+        JS  - 交互行为 - behavior
+        -->
         <h1>今日推荐的水果</h1>
         <hr>
-        <ul>
+        <ul id="fruits">
             {% for fruit in selected_fruits %}
             <li>{{ fruit }}</li>
             {% endfor %}
