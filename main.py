@@ -1,3 +1,6 @@
+import random
+
+import pymysql
 from flask import Flask, redirect
 
 app = Flask(__name__)
@@ -20,6 +23,40 @@ def get_general_data():
         {'icon': 'professor.png', 'value': 13642, 'name': '科研专家数'},
         {'icon': 'equipment.png', 'value': 15536, 'name': '科研仪器经费'},
     ]}
+
+
+@app.route('/api/sales_data')
+def get_sales_data():
+    y1_data = [random.randrange(10, 41) for _ in range(6)]
+    y2_data = [random.randrange(20, 51) for _ in range(6)]
+    return {'y1': y1_data, 'y2': y2_data}
+
+
+@app.route('/api/stock_data')
+def get_stock_data():
+    conn = pymysql.connect(host='10.7.174.103', port=3306,
+                           user='guest', password='Guest.618',
+                           database='stock', charset='utf8mb4')
+    x_data, y_data = [], []
+    try:
+        with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute(
+                'select trade_date, open_price, close_price, low_price, high_price '
+                'from tb_baba_stock where trade_date between "2020-1-1" and "2020-1-31"'
+            )
+            row_dict = cursor.fetchone()
+            while row_dict:
+                x_data.append(row_dict['trade_date'].strftime('%Y-%m-%d'))
+                y_data.append([
+                    float(row_dict['open_price']), float(row_dict['close_price']),
+                    float(row_dict['low_price']), float(row_dict['high_price'])
+                ])
+                row_dict = cursor.fetchone()
+    except pymysql.MySQLError as err:
+        print(err)
+    finally:
+        conn.close()
+    return {'x': x_data, 'y': y_data}
 
 
 if __name__ == '__main__':

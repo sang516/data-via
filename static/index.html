@@ -26,6 +26,12 @@
             .detail {
                 font-size: 10px;
             }
+            #bar, #kline {
+                width: 700px;
+                height: 350px;
+                margin: 10px auto;
+                border: 1px solid black;
+            }
         </style>
     </head>
     <body>
@@ -52,17 +58,17 @@
                 - style - 修改标签样式
         -->
         <!--
-            后端渲染：通过后端代码（Java、Python、PHP等）渲染模板页面为页面生成动态内容
-            缺点：
-                ~ 搞后端的人还需要具备一些前端知识
-                ~ 开销较大，增加服务器的负担和压力
-            前端渲染：后端是负责处理业务和提供数据，前端实现页面的渲染（前后端分离开发）
-            优点：
-                ~ 前后端的工作是独立的，相互不影响
-                ~ 通过浏览器中的JavaScript引擎实现页面渲染，不增加服务器的负担
+        后端渲染：通过后端代码（Java、Python、PHP等）渲染模板页面为页面生成动态内容
+        缺点：
+            ~ 搞后端的人还需要具备一些前端知识
+            ~ 开销较大，增加服务器的负担和压力
+        前端渲染：后端是负责处理业务和提供数据，前端实现页面的渲染（前后端分离开发）
+        优点：
+            ~ 前后端的工作是独立的，相互不影响
+            ~ 通过浏览器中的JavaScript引擎实现页面渲染，不增加服务器的负担
 
-            Python程序会提供JSON格式的数据，前端通过JavaScript请求JSON数据，
-            获得数据后通过Vue.js实现页面的渲染（把数据动态的填写到页面上）
+        Python程序会提供JSON格式的数据，前端通过JavaScript请求JSON数据，
+        获得数据后通过Vue.js实现页面的渲染（把数据动态的填写到页面上）
         -->
         <div id="app">
             <ul id="general">
@@ -70,12 +76,16 @@
                     <!-- 动态属性 -->
                     <img :src="'/static/images/' + item.icon" width="36">
                     <div style="display: inline-block">
-                        <div class="detail">{{ item.value }}</div>
+                        <div class="detail">{{ item.value | numberFormat }}</div>
                         <div class="detail">{{ item.name }}</div>
                     </div>
                 </li>
             </ul>
         </div>
+        <!-- 如果需要在前端生成统计图表，最好的选择是ECharts和D3.js -->
+        <!-- 创建一个用于绘图的div，通过CSS指定好绘图区域的宽度和高度 -->
+        <div id="bar"></div>
+        <div id="kline"></div>
         <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.14/vue.min.js"></script>
 	    <script>
 	        // 通过JavaScript代码获取JSON数据，然后交给Vue.js渲染页面
@@ -84,6 +94,11 @@
                 data: {
                     data_items: []
                 },
+                filters: {
+                    numberFormat(x) {
+                        return x.toLocaleString()
+                    }
+                },
                 created() {
                     fetch('/api/general_data')
                         .then(resp => resp.json())
@@ -91,5 +106,67 @@
                 }
             })
 	    </script>
+        <!-- 第一步：引入ECharts的JS文件 -->
+        <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.1.2/echarts.min.js"></script>
+        <!-- <script src="https://cdn.jsdelivr.net/npm/echarts@5.1.2/dist/echarts.min.js"></script> -->
+        <!-- 使用ECharts库实现图表渲染 -->
+        <script>
+            // 将指定的div处理成绘图用的画布
+            let barChart = echarts.init(document.querySelector('#bar'))
+            fetch('/api/sales_data')
+                .then(resp => resp.json())
+                .then(json => {
+                    // 准备图表需要使用到的数据
+                    let barOption = {
+                        title: {
+                            text: '销售统计图'
+                        },
+                        legend: {
+                            data:['华东区', '华南区']
+                        },
+                        xAxis: {
+                            data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+                        },
+                        yAxis: {},
+                        series: [
+                            {
+                                name: '华东区',
+                                type: 'bar',
+                                data: json.y1
+                            },
+                            {
+                                name: '华南区',
+                                type: 'bar',
+                                data: json.y2
+                            }
+                        ]
+                    }
+                    // 把数据加到图表上
+                    barChart.setOption(barOption)
+                })
+
+            let klineChart = echarts.init(document.querySelector('#kline'))
+            let klineOption = {
+                title: {
+                    text: '阿里巴巴2021年K线'
+                },
+                xAxis: {
+                    data: ['2017-10-24', '2017-10-25', '2017-10-26', '2017-10-27']
+                },
+                yAxis: {},
+                series: [
+                    {
+                        type: 'k',
+                        data: [
+                            [20, 34, 10,38],
+                            [40, 35, 30, 50],
+                            [31, 38, 33, 44],
+                            [38, 15, 5, 42]
+                        ]
+                    }
+                ]
+            }
+            klineChart.setOption(klineOption)
+        </script>
     </body>
 </html>
