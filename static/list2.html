@@ -56,7 +56,7 @@
 <body>
 	<div id="app">
 		<ul id="fruits">
-			<li v-for="fruit in fruits" @click="removeItem(fruit)">{{ fruit }}</li>
+			<li v-for="x in fruits" @click="removeItem(x)">{{ x }}</li>
 		</ul>
 		<div>
 			<input type="text" v-model="fruitName" @keydown.enter="addItem()">
@@ -68,20 +68,20 @@
 		let app = new Vue({
 			el: '#app',
 			data: {
-				fruits: ['榴莲', '番茄', '葡萄'],
+				fruits: ['苹果', '香蕉', '葡萄'],
 				fruitName: ''
 			},
 			methods: {
-				removeItem(fruit) {
-					let index = this.fruits.indexOf(fruit)
-					this.fruits.splice(index, 1)
-				},
 				addItem() {
-					let name = this.fruitName.trim()
-					if (name.length > 0) {
-						this.fruits.push(name)
+					let fName = this.fruitName.trim()
+					if (fName.length > 0) {
+						this.fruits.unshift(fName)
 					}
 					this.fruitName = ''
+				},
+				removeItem(x) {
+					let index = this.fruits.indexOf(x)
+					this.fruits.splice(index, 1)
 				}
 			}
 		})

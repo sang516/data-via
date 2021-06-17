@@ -32,6 +32,11 @@
                 line-height: 40px;
                 font-size: 22px;
             }
+            #general>li {
+                float: left;
+                margin: 10px 20px;
+                list-style: none;
+            }
         </style>
     </head>
     <body>
@@ -59,10 +64,52 @@
         -->
         <h1>今日推荐的水果</h1>
         <hr>
-        <ul id="fruits">
-            {% for fruit in selected_fruits %}
-            <li class="item">{{ fruit }}</li>
-            {% endfor %}
-        </ul>
+        <!--
+            后端渲染：通过后端代码（Java、Python、PHP等）渲染模板页面为页面生成动态内容
+            缺点：
+                ~ 搞后端的人还需要具备一些前端知识
+                ~ 开销较大，增加服务器的负担和压力
+            前端渲染：后端是负责处理业务和提供数据，前端实现页面的渲染（前后端分离开发）
+            优点：
+                ~ 前后端的工作是独立的，相互不影响
+                ~ 通过浏览器中的JavaScript引擎实现页面渲染，不增加服务器的负担
+
+            Python程序会提供JSON格式的数据，前端通过JavaScript请求JSON数据，
+            获得数据后通过Vue.js实现页面的渲染（把数据动态的填写到页面上）
+        -->
+        <div id="app">
+            <ul id="fruits">
+                <li class="item" v-for="fruit in selected_fruits">{{ fruit }}</li>
+            </ul>
+            <ul id="general">
+                <li v-for="item in data_items">
+                    <img :src="'/static/images/' + item.icon" width="36">
+                    <div>
+                        <div>{{ item.value }}</div>
+                        <div>{{ item.name }}</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.14/vue.min.js"></script>
+	    <script>
+	        // 通过JavaScript代码获取JSON数据，然后交给Vue.js渲染页面
+            let app = new Vue({
+                el: '#app',
+                data: {
+                    selected_fruits: [],
+                    data_items: []
+                },
+                created() {
+                    fetch('/api/fruits')
+                        .then(resp => resp.json())
+                        .then(json => this.selected_fruits = json.fruits)
+
+                    fetch('/api/general_data')
+                        .then(resp => resp.json())
+                        .then(json => this.data_items = json.items)
+                }
+            })
+	    </script>
     </body>
 </html>
