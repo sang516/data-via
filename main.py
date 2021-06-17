@@ -1,11 +1,11 @@
 import random
 
-from flask import Flask, render_template
+from flask import Flask, render_template, Blueprint
 
 app = Flask(__name__)
 
 
-@app.route('/')
+@app.route('/fruits')
 def say_hello():
     fruits_list = [
         '苹果', '香蕉', '山竹', '榴莲', '杨梅', '草莓', '蓝莓', '石榴', '番茄',
@@ -17,4 +17,4 @@ def say_hello():
 
 
 if __name__ == '__main__':
-    app.run(host='10.7.174.103', debug=True)
+    app.run(debug=True)
