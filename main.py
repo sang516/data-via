@@ -34,7 +34,7 @@ def get_sales_data():
 
 @app.route('/api/stock_data')
 def get_stock_data():
-    conn = pymysql.connect(host='10.7.174.103', port=3306,
+    conn = pymysql.connect(host='localhost', port=3306,
                            user='guest', password='Guest.618',
                            database='stock', charset='utf8mb4')
     x_data, y_data = [], []

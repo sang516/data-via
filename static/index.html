@@ -119,13 +119,13 @@
                     // 准备图表需要使用到的数据
                     let barOption = {
                         title: {
-                            text: '销售统计图'
+                            text: '大区销售统计图'
                         },
                         legend: {
                             data:['华东区', '华南区']
                         },
                         xAxis: {
-                            data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+                            data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
                         },
                         yAxis: {},
                         series: [
@@ -146,27 +146,40 @@
                 })
 
             let klineChart = echarts.init(document.querySelector('#kline'))
-            let klineOption = {
-                title: {
-                    text: '阿里巴巴2021年K线'
-                },
-                xAxis: {
-                    data: ['2017-10-24', '2017-10-25', '2017-10-26', '2017-10-27']
-                },
-                yAxis: {},
-                series: [
-                    {
-                        type: 'k',
-                        data: [
-                            [20, 34, 10,38],
-                            [40, 35, 30, 50],
-                            [31, 38, 33, 44],
-                            [38, 15, 5, 42]
+            fetch('/api/stock_data')
+                .then(resp => resp.json())
+                .then(json => {
+                    let klineOption = {
+                        title: {
+                            text: '阿里巴巴2021年K线'
+                        },
+                        xAxis: {
+                            data: json.x
+                        },
+                        yAxis: {
+                            scale: true,
+                            splitArea: {
+                                show: true
+                            }
+                        },
+                        dataZoom: [
+                            {
+                                show: true,
+                                type: 'slider',
+                                top: '90%',
+                                start: 0,
+                                end: 100
+                            }
+                        ],
+                        series: [
+                            {
+                                type: 'k',
+                                data: json.y
+                            }
                         ]
                     }
-                ]
-            }
-            klineChart.setOption(klineOption)
+                    klineChart.setOption(klineOption)
+                })
         </script>
     </body>
 </html>
