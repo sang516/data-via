@@ -32,10 +32,22 @@
                 line-height: 40px;
                 font-size: 22px;
             }
+            #general {
+                width: 840px;
+                margin: 20px auto;
+                text-align: center;
+            }
             #general>li {
-                float: left;
+                /* float: left; */
+                display: inline-block;
                 margin: 10px 20px;
                 list-style: none;
+            }
+            #general>li>img, #general>li>div {
+                vertical-align: middle;
+            }
+            .detail {
+                font-size: 10px;
             }
         </style>
     </head>
@@ -62,8 +74,6 @@
                 - textContent / innerHTML - 修改标签内容
                 - style - 修改标签样式
         -->
-        <h1>今日推荐的水果</h1>
-        <hr>
         <!--
             后端渲染：通过后端代码（Java、Python、PHP等）渲染模板页面为页面生成动态内容
             缺点：
@@ -78,15 +88,13 @@
             获得数据后通过Vue.js实现页面的渲染（把数据动态的填写到页面上）
         -->
         <div id="app">
-            <ul id="fruits">
-                <li class="item" v-for="fruit in selected_fruits">{{ fruit }}</li>
-            </ul>
             <ul id="general">
                 <li v-for="item in data_items">
+                    <!-- 动态属性 -->
                     <img :src="'/static/images/' + item.icon" width="36">
-                    <div>
-                        <div>{{ item.value }}</div>
-                        <div>{{ item.name }}</div>
+                    <div style="display: inline-block">
+                        <div class="detail">{{ item.value }}</div>
+                        <div class="detail">{{ item.name }}</div>
                     </div>
                 </li>
             </ul>
@@ -97,14 +105,9 @@
             let app = new Vue({
                 el: '#app',
                 data: {
-                    selected_fruits: [],
                     data_items: []
                 },
                 created() {
-                    fetch('/api/fruits')
-                        .then(resp => resp.json())
-                        .then(json => this.selected_fruits = json.fruits)
-
                     fetch('/api/general_data')
                         .then(resp => resp.json())
                         .then(json => this.data_items = json.items)
