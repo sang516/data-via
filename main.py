@@ -18,34 +18,70 @@ def show_index():
 # 网络API（网络数据接口）- 请求这个URL就可以获得对应的数据（通常是JSON格式）
 @app.route('/api/general_data')
 def get_general_data():
+    names = ('GMV', '销售额', '实际销售额', '客单价')
+    divsors = (10000, 10000, 10000, 1)
+    units = ('万元', '万元', '万元', '元')
+    values = [0] * 4
     conn = get_mysql_connection()
     try:
+        sql_queries = [
+            'select sum(orderAmount) from tb_order',
+            'select sum(payment) from tb_order',
+            'select sum(payment) from tb_order where chargeback="否"',
+            'select sum(payment) / count(distinct userID) from tb_order where chargeback="否"'
+        ]
         with conn.cursor() as cursor:
-            cursor.execute('select sum(orderAmount) from tb_order')
-            gmv = round(float(cursor.fetchone()[0]) / 10000, 2)
-            cursor.execute('select sum(payment) from tb_order')
-            sales = round(float(cursor.fetchone()[0]) / 10000, 2)
-            cursor.execute('select sum(payment) from tb_order where chargeback="否"')
-            real_sales = round(float(cursor.fetchone()[0]) / 10000, 2)
-            cursor.execute('select sum(payment) / count(distinct userID) from tb_order where chargeback="否"')
-            arppu = round(float(cursor.fetchone()[0]), 2)
+            for i, query in enumerate(sql_queries):
+                cursor.execute(query)
+                values[i] = round(float(cursor.fetchone()[0]) / divsors[i], 2)
     except pymysql.MySQLError as err:
         print(err)
     finally:
         conn.close()
-    return {'results': [
-        {'name': 'GMV', 'value': gmv, 'unit': '万元'},
-        {'name': '销售额', 'value': sales, 'unit': '万元'},
-        {'name': '实际销售额', 'value': real_sales, 'unit': '万元'},
-        {'name': '客单价', 'value': arppu, 'unit': '元'}
-    ]}
+    results = [{'name': names[i], 'unit': units[i], 'value': values[i]} for i in range(4)]
+    return {'results': results}
+
+
+@app.route('/api/gmv_by_month')
+def get_gmv_by_month():
+    conn = get_mysql_connection()
+    months, gmvs = [], []
+    try:
+        with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute('select month(orderTime) as month, sum(orderAmount) as gmv from tb_order group by month')
+            row_dict = cursor.fetchone()
+            while row_dict:
+                months.append(f'{row_dict["month"]}月')
+                gmvs.append(round(float(row_dict['gmv']) / 10000, 2))
+                row_dict = cursor.fetchone()
+    except pymysql.MySQLError as err:
+        print(err)
+    finally:
+        conn.close()
+    return {'x': months, 'y': gmvs}
+
+
+@app.route('/api/channel_data')
+def get_channel_data():
+    conn = get_mysql_connection()
+    try:
+        with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute('select chanelID as name, count(distinct userID) as value from tb_order group by chanelID order by value desc')
+            results = cursor.fetchall()
+    except pymysql.MySQLError as err:
+        print(err)
+    finally:
+        conn.close()
+    return {'results': results}
 
 
 @app.route('/api/sales_data')
 def get_sales_data():
     y1_data = [random.randrange(10, 41) for _ in range(6)]
     y2_data = [random.randrange(20, 51) for _ in range(6)]
-    return {'y1': y1_data, 'y2': y2_data}
+    y3_data = [random.randrange(30, 41) for _ in range(6)]
+    y4_data = [random.randrange(20, 31) for _ in range(6)]
+    return {'y1': y1_data, 'y2': y2_data, 'y3': y3_data, 'y4': y4_data}
 
 
 @app.route('/api/stock_data')
