@@ -3,6 +3,8 @@ import random
 import pymysql
 from flask import Flask, redirect, request
 
+from utils import get_mysql_connection
+
 app = Flask(__name__)
 
 
@@ -16,12 +18,26 @@ def show_index():
 # 网络API（网络数据接口）- 请求这个URL就可以获得对应的数据（通常是JSON格式）
 @app.route('/api/general_data')
 def get_general_data():
-    return {'items': [
-        {'icon': 'house.png', 'value': 16543, 'name': '省重点实验室数'},
-        {'icon': 'computer.png', 'value': 9631, 'name': '全省科研项目数'},
-        {'icon': 'medal.png', 'value': 36542, 'name': '全省科研成果数'},
-        {'icon': 'professor.png', 'value': 13642, 'name': '科研专家数'},
-        {'icon': 'equipment.png', 'value': 15536, 'name': '科研仪器经费'},
+    conn = get_mysql_connection()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute('select sum(orderAmount) from tb_order')
+            gmv = round(float(cursor.fetchone()[0]) / 10000, 2)
+            cursor.execute('select sum(payment) from tb_order')
+            sales = round(float(cursor.fetchone()[0]) / 10000, 2)
+            cursor.execute('select sum(payment) from tb_order where chargeback="否"')
+            real_sales = round(float(cursor.fetchone()[0]) / 10000, 2)
+            cursor.execute('select sum(payment) / count(distinct userID) from tb_order where chargeback="否"')
+            arppu = round(float(cursor.fetchone()[0]), 2)
+    except pymysql.MySQLError as err:
+        print(err)
+    finally:
+        conn.close()
+    return {'results': [
+        {'name': 'GMV', 'value': gmv, 'unit': '万元'},
+        {'name': '销售额', 'value': sales, 'unit': '万元'},
+        {'name': '实际销售额', 'value': real_sales, 'unit': '万元'},
+        {'name': '客单价', 'value': arppu, 'unit': '元'}
     ]}
 
 
@@ -34,7 +50,7 @@ def get_sales_data():
 
 @app.route('/api/stock_data')
 def get_stock_data():
-    # 获取查询参数（URL参数）
+    # 获取查询参数（URL参数，跟在URL之后?后面的参数）
     start = request.args.get('start', '2020-1-1')
     end = request.args.get('end', '2020-12-31')
     conn = pymysql.connect(host='localhost', port=3306,

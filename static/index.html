@@ -43,6 +43,22 @@
                 width: 1200px;
                 margin: 0 auto;
             }
+            #cal {
+                width: 520px;
+                margin: 10px auto;
+                text-align: center;
+            }
+            #cal>input, #cal>button {
+                margin: 0 4px;
+                border: none;
+                outline: none;
+            }
+            #cal>button {
+                color: white;
+                background-color: darkcyan;
+                width: 58px;
+                height: 22px;
+            }
         </style>
     </head>
     <body>
@@ -84,10 +100,9 @@
         <div id="app">
             <ul id="general">
                 <li v-for="item in data_items">
-                    <!-- 动态属性 -->
-                    <img :src="'/static/images/' + item.icon" width="36">
+                    <img src="/static/images/medal.png" width="36">
                     <div style="display: inline-block">
-                        <div class="detail">{{ item.value | numberFormat }}</div>
+                        <div class="detail">{{ item.value | numberFormat }}{{ item.unit }}</div>
                         <div class="detail">{{ item.name }}</div>
                     </div>
                 </li>
@@ -95,9 +110,9 @@
         </div>
         <!-- 如果需要在前端生成统计图表，最好的选择是ECharts和D3.js -->
         <!-- 创建一个用于绘图的div，通过CSS指定好绘图区域的宽度和高度 -->
-        <div>
-            <input type="date" id="start">
-            <input type="date" id="end">
+        <div id="cal">
+            <input type="date" value="2020-01-01" id="start">
+            <input type="date" value="2020-12-31" id="end">
             <button id="search">查询</button>
         </div>
         <div id="chart">
@@ -120,7 +135,7 @@
                 created() {
                     fetch('/api/general_data')
                         .then(resp => resp.json())
-                        .then(json => this.data_items = json.items)
+                        .then(json => this.data_items = json.results)
                 }
             })
 	    </script>
