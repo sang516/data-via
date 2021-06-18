@@ -27,10 +27,17 @@
                 font-size: 10px;
             }
             #bar, #kline {
-                width: 700px;
-                height: 350px;
-                margin: 10px auto;
+                width: 480px;
+                height: 320px;
+                margin: 10px 50px;
                 border: 1px solid black;
+            }
+            #chart>div {
+                float: left;
+            }
+            #chart {
+                width: 1200px;
+                margin: 0 auto;
             }
         </style>
     </head>
@@ -84,8 +91,10 @@
         </div>
         <!-- 如果需要在前端生成统计图表，最好的选择是ECharts和D3.js -->
         <!-- 创建一个用于绘图的div，通过CSS指定好绘图区域的宽度和高度 -->
-        <div id="bar"></div>
-        <div id="kline"></div>
+        <div id="chart">
+            <div id="bar"></div>
+            <div id="kline"></div>
+        </div>
         <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.14/vue.min.js"></script>
 	    <script>
 	        // 通过JavaScript代码获取JSON数据，然后交给Vue.js渲染页面
@@ -145,13 +154,13 @@
                     barChart.setOption(barOption)
                 })
 
-            let klineChart = echarts.init(document.querySelector('#kline'))
+            let klineChart = echarts.init(document.querySelector('#kline'), 'dark')
             fetch('/api/stock_data')
                 .then(resp => resp.json())
                 .then(json => {
                     let klineOption = {
                         title: {
-                            text: '阿里巴巴2021年K线'
+                            text: '阿里巴巴2020年K线'
                         },
                         xAxis: {
                             data: json.x
