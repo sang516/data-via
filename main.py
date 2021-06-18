@@ -1,7 +1,7 @@
 import random
 
 import pymysql
-from flask import Flask, redirect
+from flask import Flask, redirect, request
 
 app = Flask(__name__)
 
@@ -34,6 +34,9 @@ def get_sales_data():
 
 @app.route('/api/stock_data')
 def get_stock_data():
+    # 获取查询参数（URL参数）
+    start = request.args.get('start', '2020-1-1')
+    end = request.args.get('end', '2020-12-31')
     conn = pymysql.connect(host='localhost', port=3306,
                            user='guest', password='Guest.618',
                            database='stock', charset='utf8mb4')
@@ -42,7 +45,8 @@ def get_stock_data():
         with conn.cursor(pymysql.cursors.DictCursor) as cursor:
             cursor.execute(
                 'select trade_date, open_price, close_price, low_price, high_price '
-                'from tb_baba_stock where trade_date between "2020-1-1" and "2020-1-31"'
+                'from tb_baba_stock where trade_date between %s and %s',
+                (start, end)
             )
             row_dict = cursor.fetchone()
             while row_dict:

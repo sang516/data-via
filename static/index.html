@@ -9,6 +9,9 @@
                 margin: 0;
                 padding: 0;
             }
+            body {
+                background-color: black;
+            }
             #general {
                 width: 840px;
                 margin: 20px auto;
@@ -19,6 +22,7 @@
                 display: inline-block;
                 margin: 10px 20px;
                 list-style: none;
+                color: white;
             }
             #general>li>img, #general>li>div {
                 vertical-align: middle;
@@ -91,6 +95,11 @@
         </div>
         <!-- 如果需要在前端生成统计图表，最好的选择是ECharts和D3.js -->
         <!-- 创建一个用于绘图的div，通过CSS指定好绘图区域的宽度和高度 -->
+        <div>
+            <input type="date" id="start">
+            <input type="date" id="end">
+            <button id="search">查询</button>
+        </div>
         <div id="chart">
             <div id="bar"></div>
             <div id="kline"></div>
@@ -121,7 +130,7 @@
         <!-- 使用ECharts库实现图表渲染 -->
         <script>
             // 将指定的div处理成绘图用的画布
-            let barChart = echarts.init(document.querySelector('#bar'))
+            let barChart = echarts.init(document.querySelector('#bar'), 'dark')
             fetch('/api/sales_data')
                 .then(resp => resp.json())
                 .then(json => {
@@ -189,6 +198,46 @@
                     }
                     klineChart.setOption(klineOption)
                 })
+
+            let searchButton = document.querySelector('#search')
+            searchButton.addEventListener('click', evt => {
+                let start = document.querySelector('#start').value || '2020-1-1'
+                let end = document.querySelector('#end').value || '2020-12-31'
+                fetch(`/api/stock_data?start=${start}&end=${end}`)
+                    .then(resp => resp.json())
+                    .then(json => {
+                        let klineOption = {
+                            title: {
+                                text: '阿里巴巴2020年K线'
+                            },
+                            xAxis: {
+                                data: json.x
+                            },
+                            yAxis: {
+                                scale: true,
+                                splitArea: {
+                                    show: true
+                                }
+                            },
+                            dataZoom: [
+                                {
+                                    show: true,
+                                    type: 'slider',
+                                    top: '90%',
+                                    start: 0,
+                                    end: 100
+                                }
+                            ],
+                            series: [
+                                {
+                                    type: 'k',
+                                    data: json.y
+                                }
+                            ]
+                        }
+                        klineChart.setOption(klineOption)
+                    })
+            })
         </script>
     </body>
 </html>
