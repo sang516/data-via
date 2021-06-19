@@ -146,9 +146,12 @@
                     let gmvOption = {
                         title: {
                             text: 'GMV走势',
+                            top: '5%',
+                            left: '5%'
                         },
                         legend: {
-                            data: ['GMV']
+                            data: ['GMV'],
+                            top: '5%'
                         },
                         xAxis: {
                             type: 'category',
@@ -159,6 +162,9 @@
                             min: 400,
                             max: 1200,
                             interval: 100
+                        },
+                        grid: {
+                            bottom: '10%'
                         },
                         series: [
                             {
@@ -188,7 +194,9 @@
                 .then(json => {
                     let channelOption = {
                         title: {
-                            text: '渠道获客占比'
+                            text: '渠道获客占比',
+                            top: '5%',
+                            left: '5%'
                         },
                         tooltip: {
                             trigger: 'item'
@@ -205,6 +213,7 @@
                                 name: '获客渠道',
                                 type: 'pie',
                                 radius: ['40%', '70%'],
+                                center: ['50%', '55%'],
                                 avoidLabelOverlap: false,
                                 label: {
                                     show: true
@@ -234,15 +243,24 @@
                     // 准备图表需要使用到的数据
                     let barOption = {
                         title: {
-                            text: '大区销售'
+                            text: '大区销售',
+                            top: '5%',
+                            left: '5%'
                         },
                         legend: {
-                            data:['华东区', '华南区', '华北区', '西南区']
+                            data:['华东区', '华南区', '华北区', '西南区'],
+                            top: '5%',
+                            left: '25%',
                         },
                         xAxis: {
                             data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
                         },
-                        yAxis: {},
+                        yAxis: {
+                        },
+                        grid: {
+                            top: '25%',
+                            bottom: '10%'
+                        },
                         series: [
                             {
                                 name: '华东区',
@@ -276,7 +294,9 @@
                 .then(json => {
                     let klineOption = {
                         title: {
-                            text: '公司股票'
+                            text: '公司股票',
+                            top: '5%',
+                            left: '5%'
                         },
                         xAxis: {
                             data: json.x
