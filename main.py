@@ -2,10 +2,12 @@ import random
 
 import pymysql
 from flask import Flask, redirect, request
+from flask_cors import CORS
 
 from utils import get_mysql_connection
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route('/')
