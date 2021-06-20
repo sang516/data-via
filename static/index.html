@@ -12,8 +12,13 @@
             body {
                 background-color: black;
             }
+            h1 {
+                color: white;
+                text-align: center;
+            }
             #general {
                 width: 840px;
+                height: 50px;
                 margin: 20px auto;
                 text-align: center;
             }
@@ -95,6 +100,8 @@
         Python程序会提供JSON格式的数据，前端通过JavaScript请求JSON数据，
         获得数据后通过Vue.js实现页面的渲染（把数据动态的填写到页面上）
         -->
+        <h1>电商订单数据可视化</h1>
+        <hr>
         <div id="app">
             <ul id="general">
                 <li v-for="item in data_items">
@@ -110,8 +117,8 @@
         <!-- 创建一个用于绘图的div，通过CSS指定好绘图区域的宽度和高度 -->
         <div id="chart">
             <div id="gmv"></div>
-            <div id="bar"></div>
             <div id="channel"></div>
+            <div id="bar"></div>
             <div id="kline"></div>
         </div>
         <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.14/vue.min.js"></script>
