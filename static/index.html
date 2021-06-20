@@ -12,6 +12,10 @@
             body {
                 background-color: black;
             }
+            h1 {
+                text-align: center;
+                color: white;
+            }
             #general {
                 width: 840px;
                 margin: 20px auto;
@@ -95,10 +99,12 @@
         Python程序会提供JSON格式的数据，前端通过JavaScript请求JSON数据，
         获得数据后通过Vue.js实现页面的渲染（把数据动态的填写到页面上）
         -->
+        <h1>电商订单数据可视化项目</h1>
+        <hr>
         <div id="app">
             <ul id="general">
                 <li v-for="item in data_items">
-                    <img src="/static/images/medal.png" width="36">
+                    <img src="images/medal.png" width="36">
                     <div style="display: inline-block">
                         <div class="detail">{{ item.value | numberFormat }}{{ item.unit }}</div>
                         <div class="detail">{{ item.name }}</div>
