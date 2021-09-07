@@ -3,7 +3,7 @@ from functools import partial
 
 import pymysql
 
-DB_HOST = os.environ.get('DB_HOST') or 'localhost'
+DB_HOST = os.environ.get('DB_HOST') or '10.7.178.71'
 DB_PORT = os.environ.get('DB_PORT') or '3306'
 DB_USER = os.environ.get('DB_USER') or 'guest'
 DB_PASS = os.environ.get('DB_PASS') or 'Guest.618'

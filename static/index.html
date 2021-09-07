@@ -294,43 +294,43 @@
                     barChart.setOption(barOption)
                 })
 
-            let klineChart = echarts.init(document.querySelector('#kline'), 'dark')
-            fetch('/api/stock_data')
-                .then(resp => resp.json())
-                .then(json => {
-                    let klineOption = {
-                        title: {
-                            text: '公司股票',
-                            top: '5%',
-                            left: '5%'
-                        },
-                        xAxis: {
-                            data: json.x
-                        },
-                        yAxis: {
-                            scale: true,
-                            splitArea: {
-                                show: true
-                            }
-                        },
-                        dataZoom: [
-                            {
-                                show: true,
-                                type: 'slider',
-                                top: '90%',
-                                start: 0,
-                                end: 100
-                            }
-                        ],
-                        series: [
-                            {
-                                type: 'k',
-                                data: json.y
-                            }
-                        ]
-                    }
-                    klineChart.setOption(klineOption)
-                })
+            // let klineChart = echarts.init(document.querySelector('#kline'), 'dark')
+            // fetch('/api/stock_data')
+            //     .then(resp => resp.json())
+            //     .then(json => {
+            //         let klineOption = {
+            //             title: {
+            //                 text: '公司股票',
+            //                 top: '5%',
+            //                 left: '5%'
+            //             },
+            //             xAxis: {
+            //                 data: json.x
+            //             },
+            //             yAxis: {
+            //                 scale: true,
+            //                 splitArea: {
+            //                     show: true
+            //                 }
+            //             },
+            //             dataZoom: [
+            //                 {
+            //                     show: true,
+            //                     type: 'slider',
+            //                     top: '90%',
+            //                     start: 0,
+            //                     end: 100
+            //                 }
+            //             ],
+            //             series: [
+            //                 {
+            //                     type: 'k',
+            //                     data: json.y
+            //                 }
+            //             ]
+            //         }
+            //         klineChart.setOption(klineOption)
+            //     })
         </script>
     </body>
 </html>
