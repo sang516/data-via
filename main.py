@@ -89,7 +89,6 @@ def get_sales_data():
 
 @app.route('/api/stock_data')
 def get_stock_data():
-    # 获取查询参数（URL参数，跟在URL之后?后面的参数）
     start = request.args.get('start', '2020-1-1')
     end = request.args.get('end', '2020-12-31')
     conn = get_mysql_connection(database='stock')
